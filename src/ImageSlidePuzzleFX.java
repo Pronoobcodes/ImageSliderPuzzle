@@ -58,7 +58,7 @@ public class ImageSlidePuzzleFX extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage stage) {
         root = new BorderPane();
         gridPane = new GridPane();
         gridPane.setHgap(1);
@@ -69,7 +69,7 @@ public class ImageSlidePuzzleFX extends Application {
         HBox controls = new HBox(8);
         controls.setPadding(new Insets(8));
         loadBtn = new Button("Load Image");
-        loadBtn.setOnAction(e -> loadImage(primaryStage));
+        loadBtn.setOnAction(e -> loadImage(stage));
 
         controls.getChildren().add(loadBtn);
 
@@ -142,9 +142,11 @@ public class ImageSlidePuzzleFX extends Application {
         computeColsRows();
 
         Scene scene = new Scene(root, 1000, 700);
-        primaryStage.setScene(scene);
-        primaryStage.setTitle("Sliding Image Puzzle");
-        primaryStage.show();
+        stage.setScene(scene);
+        stage.setTitle("Sliding Image Puzzle");
+        Image icon = new Image("slider.png");
+        stage.getIcons().add(icon);
+        stage.show();
 
         // responsive: rebuild board when window size changes (if image loaded)
         scene.widthProperty().addListener((obs, oldV, newV) -> {
