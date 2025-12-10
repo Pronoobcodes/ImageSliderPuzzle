@@ -32,6 +32,7 @@ public class ImageSlidePuzzleFX extends Application {
     private static final int MAX_ROWS = 12;
 
     private Image sourceImage;
+    private ImageView originalPreview;
     private GridPane gridPane;
     private BorderPane root;
     private ComboBox<Integer> levelBox;
@@ -61,6 +62,19 @@ public class ImageSlidePuzzleFX extends Application {
     public void start(Stage stage) {
         root = new BorderPane();
         gridPane = new GridPane();
+
+        // right-side original image preview
+        originalPreview = new ImageView();
+        originalPreview.setPreserveRatio(true);
+        originalPreview.setFitWidth(250); 
+
+        VBox previewBox = new VBox(10, new Label("Original Image:"), originalPreview);
+        previewBox.setPadding(new Insets(10));
+        previewBox.setStyle("-fx-background-color: #222; -fx-border-color: #555; -fx-border-width: 1;");
+        previewBox.setAlignment(Pos.TOP_CENTER);
+
+        root.setRight(previewBox);
+
         gridPane.setHgap(1);
         gridPane.setVgap(1);
         gridPane.setStyle("-fx-background-color: #444; -fx-padding: 8;");
@@ -184,6 +198,7 @@ public class ImageSlidePuzzleFX extends Application {
             try {
                 Image img = new Image(f.toURI().toString(), false);
                 sourceImage = img;
+                originalPreview.setImage(sourceImage);
                 computeColsRows();
                 buildBoard();
             } catch (Exception ex) {
@@ -211,6 +226,7 @@ public class ImageSlidePuzzleFX extends Application {
         int totalH = (int) Math.round(tileSize * rows);
 
         Image scaled = resampleImage(sourceImage, totalW, totalH);
+        originalPreview.setImage(sourceImage);
 
         // create tiles
         tiles = new Tile[rows][cols];
