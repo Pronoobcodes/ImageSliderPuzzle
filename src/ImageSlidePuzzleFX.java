@@ -6,7 +6,7 @@
 // which guarantees the puzzle remains solvable.
 
 import javafx.application.Application;
-import javafx.application.Platform;
+// import javafx.application.Platform;
 import javafx.geometry.*;
 import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
@@ -18,6 +18,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 
@@ -50,6 +51,13 @@ public class ImageSlidePuzzleFX extends Application {
     private Timeline timer;
     private int secondsElapsed = 0;
     private AtomicBoolean isShuffling = new AtomicBoolean(false);
+
+    // theme mode
+    private enum ThemeMode {
+        LIGHT, DARK, AUTO
+    }
+    private ThemeMode currentTheme = ThemeMode.AUTO;
+    private Scene scene;
 
     // UI sizing
     private double tileSize = 80; // will adjust to window size
@@ -122,7 +130,20 @@ public class ImageSlidePuzzleFX extends Application {
             if (sourceImage != null) buildBoard();
         });
 
-        controls.getChildren().addAll(shuffleBtn, resetBtn, autoFit);
+        ComboBox<String> themeBox = new ComboBox<>();
+        themeBox.getItems().addAll("Auto", "Light", "Dark");
+        themeBox.setValue("Auto");
+
+        themeBox.setOnAction(e -> {
+            switch (themeBox.getValue()) {
+                case "Light" -> currentTheme = ThemeMode.LIGHT;
+                case "Dark" -> currentTheme = ThemeMode.DARK;
+                default -> currentTheme = ThemeMode.AUTO;
+            }
+            applyTheme();
+        });
+
+        controls.getChildren().addAll(shuffleBtn, resetBtn, autoFit, new Label("Theme:"), themeBox);
 
         // status
         movesLabel = new Label("Moves: 0");
@@ -150,24 +171,38 @@ public class ImageSlidePuzzleFX extends Application {
             secondsElapsed++;
             updateTimeLabel();
         }));
-        timer.setCycleCount(Timeline.INDEFINITE);
+        timer.setCycleCount(Animation.INDEFINITE);
 
         // compute default
         computeColsRows();
 
-        Scene scene = new Scene(root, 1000, 700);
+        scene = new Scene(root, 1000, 700);
         stage.setScene(scene);
         stage.setTitle("Sliding Image Puzzle");
         Image icon = new Image("slider.png");
         stage.getIcons().add(icon);
         stage.show();
 
+        // apply initial theme
+        Timeline themeWatcher = new Timeline(
+                new KeyFrame(Duration.minutes(5), e -> {
+                    if (currentTheme == ThemeMode.AUTO) {
+                        applyTheme();
+                    }
+                }));
+        themeWatcher.setCycleCount(Timeline.INDEFINITE);
+        themeWatcher.play();
+
         // responsive: rebuild board when window size changes (if image loaded)
         scene.widthProperty().addListener((obs, oldV, newV) -> {
             if (sourceImage != null) buildBoard();});
         scene.heightProperty().addListener((obs, oldV, newV) -> {
             if (sourceImage != null)
-                buildBoard();});
+                buildBoard();
+        });
+        
+        applyTheme();
+
     }
 
     private void computeColsRows() {
@@ -537,4 +572,21 @@ public class ImageSlidePuzzleFX extends Application {
         int ss = s % 60;
         return String.format("%02d:%02d", mm, ss);
     }
+
+    private void applyTheme() {
+        scene.getStylesheets().clear();
+
+        boolean dark;
+
+        if (currentTheme == ThemeMode.AUTO) {
+            int hour = java.time.LocalTime.now().getHour();
+            dark = (hour >= 18 || hour < 6); // 6pm–6am
+        } else {
+            dark = (currentTheme == ThemeMode.DARK);
+        }
+
+        String css = dark ? "dark.css" : "light.css";
+        scene.getStylesheets().add(getClass().getResource(css).toExternalForm());
+    }
+
 }
