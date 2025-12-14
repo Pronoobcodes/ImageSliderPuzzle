@@ -126,8 +126,8 @@ README.md                # Project documentation
 * 🖱 Drag-to-slide tiles
 * 🔊 Sound effects
 * 📱 Touch-screen support
-* 🌙 Dark/Light themes
-* 🧩 Scene Builder (FXML) version
+* 🌙 Dark/Light themes - done
+* 🧩 Scene Builder (FXML) version - in progress 
 
 
 ## 📜 License
