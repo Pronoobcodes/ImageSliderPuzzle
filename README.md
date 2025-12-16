@@ -28,7 +28,7 @@ The game supports **5 difficulty levels**, an **original image preview**, move &
 
 * 📷 Load any image (JPG, PNG, BMP, GIF)
 * 🧠 Sliding puzzle logic (always solvable)
-* 🎚 Levels 1–20 with increasing grid size
+* 🎚 Levels 1–5 with increasing grid size
 * 📐 Grid auto-capped for real screen sizes
 * 👁 Original image preview (right panel)
 * 🔀 Shuffle & reset controls
@@ -70,6 +70,7 @@ If a level exceeds this, the grid is automatically capped.
 * **Shuffle** – Randomize tiles
 * **Reset** – Restore solved image
 * **Auto Fit** – Recalculate tile size for window
+* **Theme** - Light and dark mode
 
 
 ## 🛠 Requirements
