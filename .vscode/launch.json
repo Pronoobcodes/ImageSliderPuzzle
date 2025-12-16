@@ -9,7 +9,7 @@
             "name": "Launch Java Program",
             "request": "launch",
             "mainClass": "ImageSlidePuzzleFX",
-            "vmArgs": "--module-path \"${workspaceFolder}/lib\" --add-modules javafx.controls,javafx.fxml",
+            "vmArgs": "--module-path \"${workspaceFolder}\\javafx\\lib\" --add-modules javafx.controls,javafx.fxml",
         },
     ]
 }
